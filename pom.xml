@@ -6,7 +6,7 @@
   <groupId>com.datasalt.pangool</groupId>
   <artifactId>pangool-benchmark</artifactId>
   <version>0.40-SNAPSHOT</version>
-  <packaging>pom</packaging>
+  <packaging>jar</packaging>
 
   <name>Pangool</name>
   <url>http://www.datasalt.com</url>
@@ -58,7 +58,7 @@
 					</descriptors>
 					<archive>
 						<manifest>
-							<mainClass>com.pangool.benchmark.Driver</mainClass>
+							<mainClass>com.datasalt.pangool.benchmark.Driver</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
