@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.datasalt.pangool.benchmark.cogroup;
+package com.datasalt.pangool.benchmark.urlresolution;
 
 import java.util.HashMap;
 import java.util.Map;

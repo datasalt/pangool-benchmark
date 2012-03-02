@@ -17,14 +17,15 @@ package com.datasalt.pangool.benchmark;
 
 import org.apache.hadoop.util.ProgramDriver;
 
-import com.datasalt.pangool.benchmark.cogroup.CascadingUrlResolution;
-import com.datasalt.pangool.benchmark.cogroup.CrunchUrlResolution;
-import com.datasalt.pangool.benchmark.cogroup.HadoopUrlResolution;
 import com.datasalt.pangool.benchmark.secondarysort.CascadingSecondarySort;
 import com.datasalt.pangool.benchmark.secondarysort.CrunchSecondarySort;
 import com.datasalt.pangool.benchmark.secondarysort.HadoopSecondarySort;
+import com.datasalt.pangool.benchmark.urlresolution.CascadingUrlResolution;
+import com.datasalt.pangool.benchmark.urlresolution.CrunchUrlResolution;
+import com.datasalt.pangool.benchmark.urlresolution.HadoopUrlResolution;
 import com.datasalt.pangool.benchmark.wordcount.CascadingWordCount;
 import com.datasalt.pangool.benchmark.wordcount.CrunchWordCount;
+import com.datasalt.pangool.benchmark.wordcount.GenerateData;
 import com.datasalt.pangool.benchmark.wordcount.HadoopWordCount;
 import com.datasalt.pangool.benchmark.wordcount.PangoolWordCount;
 
@@ -32,6 +33,7 @@ public class Driver extends ProgramDriver {
 
 	public Driver() throws Throwable {
 		super();
+		addClass("wordcount_gen_data", GenerateData.class, "Generate data for the typical word count");
 		addClass("pangool-wordcount", PangoolWordCount.class, "Typical word count in Pangool");
 		addClass("hadoop-wordcount", HadoopWordCount.class, "Typical word count in Hadoop Map/Red API");
 		addClass("crunch-wordcount", CrunchWordCount.class, "Typical word count in Crunch");
