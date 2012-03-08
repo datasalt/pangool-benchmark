@@ -21,7 +21,7 @@ import cascading.flow.Flow;
 import cascading.flow.FlowConnector;
 import cascading.operation.Function;
 import cascading.operation.aggregator.Sum;
-import cascading.operation.regex.RegexParser;
+import cascading.operation.regex.RegexSplitter;
 import cascading.pipe.Each;
 import cascading.pipe.Every;
 import cascading.pipe.GroupBy;
@@ -59,8 +59,7 @@ public class CascadingSecondarySort {
 		// the 'head' of the pipe assembly
 		Pipe assembly = new Pipe("wordcount");
 
-		Function function = new RegexParser(new Fields("intField", "strField", "longField", "doubleField"),
-		    "([^ ]*)\t([^ ]*)\t([^ ]*)\t([^ ]*)", new int[] { 1, 2, 3, 4 });
+		Function function = new RegexSplitter(new Fields("intField", "strField", "longField", "doubleField"), "\t");
 		assembly = new Each(assembly, new Fields("line"), function);
 
 		//

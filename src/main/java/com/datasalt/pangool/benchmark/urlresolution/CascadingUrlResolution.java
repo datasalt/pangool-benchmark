@@ -22,7 +22,7 @@ import java.util.Properties;
 import cascading.flow.Flow;
 import cascading.flow.FlowConnector;
 import cascading.operation.Identity;
-import cascading.operation.regex.RegexParser;
+import cascading.operation.regex.RegexSplitter;
 import cascading.pipe.CoGroup;
 import cascading.pipe.Each;
 import cascading.pipe.Pipe;
@@ -35,11 +35,11 @@ import cascading.tap.Tap;
 import cascading.tuple.Fields;
 
 /**
- * Code for solving the URL Resolution CoGroup Problem in Cascading. 
+ * Code for solving the URL Resolution CoGroup Problem in Cascading.
  * <p>
- * The URL Resolution CoGroup Problem is: We have one file with URL Registers: {url	timestamp	ip} and another file with canonical
- * URL mapping: {url	canonicalUrl}. We want to obtain the URL Registers file with the url substituted with the canonical one
- * according to the mapping file: {cannonicalUrl	timestamp	ip}.
+ * The URL Resolution CoGroup Problem is: We have one file with URL Registers: {url timestamp ip} and another file with
+ * canonical URL mapping: {url canonicalUrl}. We want to obtain the URL Registers file with the url substituted with the
+ * canonical one according to the mapping file: {cannonicalUrl timestamp ip}.
  */
 public class CascadingUrlResolution {
 
@@ -64,10 +64,10 @@ public class CascadingUrlResolution {
 		Pipe urlMappingPipe = new Pipe(URL_MAPPING_PIPE);
 		Pipe urlRegisterPipe = new Pipe(URL_REGISTER_PIPE);
 
-		urlMappingPipe = new Each(urlMappingPipe, new Fields("line"), new RegexParser(
-		    new Fields("urlMap", "cannonicalUrl"), "([^ ]*)\t([^ ]*)", new int[] { 1, 2 }));
-		urlRegisterPipe = new Each(urlRegisterPipe, new Fields("line"), new RegexParser(new Fields("urlReg", "timestamp",
-		    "ip"), "([^ ]*)\t([^ ]*)\t([^ ]*)", new int[] { 1, 2, 3 }));
+		urlMappingPipe = new Each(urlMappingPipe, new Fields("line"), new RegexSplitter(new Fields("urlMap",
+		    "cannonicalUrl"), "\t"));
+		urlRegisterPipe = new Each(urlRegisterPipe, new Fields("line"), new RegexSplitter(new Fields("urlReg", "timestamp",
+		    "ip"), "\t"));
 
 		Pipe mergedPipe = new CoGroup(urlMappingPipe, new Fields("urlMap"), urlRegisterPipe, new Fields("urlReg"),
 		    new RightJoin());

@@ -1,4 +1,4 @@
 This project contains implementations in Hadoop, Crunch (with Avro) and Cascading of three problems: "Url Resolution", "Secondary Sort" and "Word count" that matches those that can be found in Pangool examples. With these alternative implementations we can benchmark the performance of Pangool and compare it with these other APIs. 
 
 The version of Cascading used for these implementations is the stable 1.2.5
-The version of Crunch used is 0.2.0 (manually) built on 2012-02-02 - Crunch doesn't have a stable / official release yet. (To build Crunch, git clone it and mvn install).
+The version of Crunch used is 0.2.0 (manually) built on 2012-02-02 - Crunch doesn't have a stable / official release yet. (To build Crunch, git clone it and mvn install: mvn install:install-file -DgroupId=com.cloudera.crunch -DartifactId=crunch -Dversion=0.2.0 -Dpackaging=jar -Dfile=/path/to/file).

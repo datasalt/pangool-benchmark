@@ -24,7 +24,6 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.datasalt.pangool.benchmark.wordcount.CascadingWordCount;
@@ -82,7 +81,6 @@ public class TestWordCounts extends BaseBenchmarkTest {
 		assertEquals(expectedOutput, outCascading);
 	}
 	
-	@Ignore
 	@Test
 	public void testCrunch() throws Exception {
 		CrunchWordCount.main(new String[] { TEST_FILE, OUT_CRUNCH });
