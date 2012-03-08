@@ -30,7 +30,7 @@ rm wordcount*
 
 hadoop jar $PANGOOL_EXAMPLES_JAR url_resolution_gen_data url-map-1.txt url-reg-1.txt 1000 10 1000
 hadoop jar $PANGOOL_EXAMPLES_JAR url_resolution_gen_data url-map-2.txt url-reg-2.txt 5000 10 1000
-hadoop jar $PANGOOL_EXAMPLES_JAR url_resolution_gen_data url-map-3.txt url-reg-3.txt 10000 10 1000
+hadoop jar $PANGOOL_EXAMPLES_JAR url_resolution_gen_data url-map-3.txt url-reg-3.txt 5000 50 1000
 
 hadoop fs -put url-*txt .
 rm url-*
