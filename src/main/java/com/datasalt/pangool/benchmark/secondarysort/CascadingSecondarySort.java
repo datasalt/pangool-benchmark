@@ -25,7 +25,6 @@ import cascading.operation.Function;
 import cascading.operation.FunctionCall;
 import cascading.operation.Operation;
 import cascading.operation.aggregator.Sum;
-import cascading.operation.regex.RegexSplitter;
 import cascading.pipe.Each;
 import cascading.pipe.Every;
 import cascading.pipe.GroupBy;
@@ -58,7 +57,7 @@ public class CascadingSecondarySort {
 		
     @Override
     public void operate(FlowProcess flowProcess, FunctionCall functionCall) {
-			TupleEntry entry = functionCall.getArguments();
+    	TupleEntry entry = functionCall.getArguments();
 			// Output Tuple
 			Tuple tuple = (Tuple) functionCall.getContext();
 			String line = (String) entry.get("line");
