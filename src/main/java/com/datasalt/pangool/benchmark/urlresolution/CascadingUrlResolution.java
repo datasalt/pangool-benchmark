@@ -57,8 +57,9 @@ public class CascadingUrlResolution {
 			super(Operation.ANY, new Fields("urlReg", "timestamp", "ip"));
 		}
 		
-    @Override
-    public void operate(FlowProcess flowProcess, FunctionCall functionCall) {
+    
+		@Override
+		public void operate(FlowProcess flowProcess, FunctionCall functionCall) {
 			TupleEntry entry = functionCall.getArguments();
 			// Output Tuple
 			Tuple tuple = (Tuple) functionCall.getContext();
@@ -79,7 +80,8 @@ public class CascadingUrlResolution {
 			}
 			
 			functionCall.getOutputCollector().add(tuple);
-    }
+			
+		}
 	}
 	
 	public final static void main(String[] args) {
