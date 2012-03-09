@@ -55,7 +55,7 @@ public class CascadingSecondarySort {
 			super(Operation.ANY, new Fields("intField", "strField", "longField", "doubleField"));
 		}
 		
-    @Override
+		@Override
     public void operate(FlowProcess flowProcess, FunctionCall functionCall) {
     	TupleEntry entry = functionCall.getArguments();
 			// Output Tuple
@@ -80,7 +80,7 @@ public class CascadingSecondarySort {
 			
 			functionCall.getOutputCollector().add(tuple);
     }
-	}
+  }
 	
 	public final static void main(String[] args) {
 
