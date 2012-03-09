@@ -21,7 +21,12 @@ import java.util.Properties;
 
 import cascading.flow.Flow;
 import cascading.flow.FlowConnector;
+import cascading.flow.FlowProcess;
+import cascading.operation.BaseOperation;
+import cascading.operation.Function;
+import cascading.operation.FunctionCall;
 import cascading.operation.Identity;
+import cascading.operation.Operation;
 import cascading.operation.regex.RegexSplitter;
 import cascading.pipe.CoGroup;
 import cascading.pipe.Each;
@@ -33,6 +38,8 @@ import cascading.tap.Hfs;
 import cascading.tap.SinkMode;
 import cascading.tap.Tap;
 import cascading.tuple.Fields;
+import cascading.tuple.Tuple;
+import cascading.tuple.TupleEntry;
 
 /**
  * Code for solving the URL Resolution CoGroup Problem in Cascading.
@@ -43,6 +50,38 @@ import cascading.tuple.Fields;
  */
 public class CascadingUrlResolution {
 
+	@SuppressWarnings({ "unchecked", "rawtypes", "serial" })
+	public static class ParseUrlRegisterInput extends BaseOperation implements Function {
+
+		public ParseUrlRegisterInput() {
+			super(Operation.ANY, new Fields("urlReg", "timestamp", "ip"));
+		}
+		
+    @Override
+    public void operate(FlowProcess flowProcess, FunctionCall functionCall) {
+			TupleEntry entry = functionCall.getArguments();
+			// Output Tuple
+			Tuple tuple = (Tuple) functionCall.getContext();
+			String line = (String) entry.get("line");
+			String[] fields = line.split("\t");
+
+			if(tuple == null) {
+				// Create cached Tuple
+				tuple = new Tuple();
+				functionCall.setContext(tuple);
+				tuple.add(fields[0]);
+				tuple.add(Long.parseLong(fields[1]));
+				tuple.add(fields[2]);
+			} else {
+				tuple.set(0, fields[0]);
+				tuple.set(1, Long.parseLong(fields[1]));
+				tuple.set(2, fields[2]);
+			}
+			
+			functionCall.getOutputCollector().add(tuple);
+    }
+	}
+	
 	public final static void main(String[] args) {
 		String urlMappingFile = args[0];
 		String urlRegisterFile = args[1];
@@ -66,8 +105,7 @@ public class CascadingUrlResolution {
 
 		urlMappingPipe = new Each(urlMappingPipe, new Fields("line"), new RegexSplitter(new Fields("urlMap",
 		    "cannonicalUrl"), "\t"));
-		urlRegisterPipe = new Each(urlRegisterPipe, new Fields("line"), new RegexSplitter(new Fields("urlReg", "timestamp",
-		    "ip"), "\t"));
+		urlRegisterPipe = new Each(urlRegisterPipe, new Fields("line"), new ParseUrlRegisterInput());
 
 		Pipe mergedPipe = new CoGroup(urlMappingPipe, new Fields("urlMap"), urlRegisterPipe, new Fields("urlReg"),
 		    new RightJoin());

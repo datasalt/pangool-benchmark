@@ -19,7 +19,11 @@ import java.util.Properties;
 
 import cascading.flow.Flow;
 import cascading.flow.FlowConnector;
+import cascading.flow.FlowProcess;
+import cascading.operation.BaseOperation;
 import cascading.operation.Function;
+import cascading.operation.FunctionCall;
+import cascading.operation.Operation;
 import cascading.operation.aggregator.Sum;
 import cascading.operation.regex.RegexSplitter;
 import cascading.pipe.Each;
@@ -32,6 +36,8 @@ import cascading.tap.Hfs;
 import cascading.tap.SinkMode;
 import cascading.tap.Tap;
 import cascading.tuple.Fields;
+import cascading.tuple.Tuple;
+import cascading.tuple.TupleEntry;
 
 /**
  * Code for solving a secondary sort problem with Cascading.
@@ -43,7 +49,40 @@ import cascading.tuple.Fields;
  */
 public class CascadingSecondarySort {
 
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings({ "unchecked", "rawtypes", "serial" })
+	public static class ParseInput extends BaseOperation implements Function {
+
+		public ParseInput() {
+			super(Operation.ANY, new Fields("intField", "strField", "longField", "doubleField"));
+		}
+		
+    @Override
+    public void operate(FlowProcess flowProcess, FunctionCall functionCall) {
+			TupleEntry entry = functionCall.getArguments();
+			// Output Tuple
+			Tuple tuple = (Tuple) functionCall.getContext();
+			String line = (String) entry.get("line");
+			String[] fields = line.split("\t");
+
+			if(tuple == null) {
+				// Create cached Tuple
+				tuple = new Tuple();
+				functionCall.setContext(tuple);
+				tuple.add(Integer.parseInt(fields[0]));
+				tuple.add(fields[1]);
+				tuple.add(Long.parseLong(fields[2]));
+				tuple.add(Double.parseDouble(fields[3]));
+			} else {
+				tuple.set(0, Integer.parseInt(fields[0]));
+				tuple.set(1, fields[1]);
+				tuple.set(2, Long.parseLong(fields[2]));
+				tuple.set(3, Double.parseDouble(fields[3]));
+			}
+			
+			functionCall.getOutputCollector().add(tuple);
+    }
+	}
+	
 	public final static void main(String[] args) {
 
 		String inputPath = args[0];
@@ -58,11 +97,10 @@ public class CascadingSecondarySort {
 
 		// the 'head' of the pipe assembly
 		Pipe assembly = new Pipe("wordcount");
+		
+//		assembly = new Each(assembly, new Fields("line"), new ParseInput());
+		assembly = new Each(assembly, new Fields("line"), new RegexSplitter(new Fields("intField", "strField", "longField", "doubleField"), "\t"));
 
-		Function function = new RegexSplitter(new Fields("intField", "strField", "longField", "doubleField"), "\t");
-		assembly = new Each(assembly, new Fields("line"), function);
-
-		//
 		assembly = new GroupBy(assembly, new Fields("intField", "strField"), new Fields("longField"));
 		assembly = new Every(assembly, new Fields("doubleField"), new Sum(new Fields("total")));
 
