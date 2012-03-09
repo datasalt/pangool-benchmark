@@ -98,8 +98,7 @@ public class CascadingSecondarySort {
 		// the 'head' of the pipe assembly
 		Pipe assembly = new Pipe("wordcount");
 		
-//		assembly = new Each(assembly, new Fields("line"), new ParseInput());
-		assembly = new Each(assembly, new Fields("line"), new RegexSplitter(new Fields("intField", "strField", "longField", "doubleField"), "\t"));
+		assembly = new Each(assembly, new Fields("line"), new ParseInput());
 
 		assembly = new GroupBy(assembly, new Fields("intField", "strField"), new Fields("longField"));
 		assembly = new Every(assembly, new Fields("doubleField"), new Sum(new Fields("total")));
