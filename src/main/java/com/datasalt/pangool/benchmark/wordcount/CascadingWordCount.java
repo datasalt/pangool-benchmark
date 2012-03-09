@@ -17,13 +17,14 @@ package com.datasalt.pangool.benchmark.wordcount;
 
 import java.util.Properties;
 
-
 import cascading.flow.Flow;
 import cascading.flow.FlowConnector;
 import cascading.operation.Aggregator;
 import cascading.operation.Function;
 import cascading.operation.aggregator.Count;
 import cascading.operation.regex.RegexGenerator;
+import cascading.pipe.assembly.AggregateBy;
+import cascading.pipe.assembly.CountBy;
 import cascading.pipe.Each;
 import cascading.pipe.Every;
 import cascading.pipe.GroupBy;
@@ -47,8 +48,8 @@ public class CascadingWordCount {
 		String outputPath = args[1];
 
 		// Define source and sink Taps.
-		
-		
+
+
 		Scheme sourceScheme = new TextLine(new Fields("line"));
 		Tap source = new Hfs(sourceScheme, inputPath);
 
@@ -65,14 +66,11 @@ public class CascadingWordCount {
 		Function function = new RegexGenerator(new Fields("word"), regex);
 		assembly = new Each(assembly, new Fields("line"), function);
 
-		// group the Tuple stream by the "word" value
-		assembly = new GroupBy(assembly, new Fields("word"));
-
 		// For every Tuple group
 		// count the number of occurrences of "word" and store result in
 		// a field named "count"
-		Aggregator count = new Count(new Fields("count"));
-		assembly = new Every(assembly, count);
+		AggregateBy count = new CountBy(new Fields("count"));
+		assembly = new AggregateBy(assembly, new Fields("word"), 100000, count);
 
 		// initialize app properties, tell Hadoop which jar file to use
 		Properties properties = new Properties();
@@ -80,9 +78,9 @@ public class CascadingWordCount {
 
 		// plan a new Flow from the assembly using the source and sink Taps
 		// with the above properties
-		 
-		
-		
+
+
+
 		FlowConnector flowConnector = new FlowConnector(properties);
 		Flow flow = flowConnector.connect("word-count", source, sink, assembly);
 
