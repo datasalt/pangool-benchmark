@@ -22,8 +22,7 @@ import cascading.flow.FlowConnector;
 import cascading.operation.Aggregator;
 import cascading.operation.Function;
 import cascading.operation.aggregator.Count;
-import cascading.operation.regex.RegexGenerator;
-import cascading.pipe.assembly.AggregateBy;
+import cascading.operation.regex.RegexSplitGenerator;
 import cascading.pipe.assembly.CountBy;
 import cascading.pipe.Each;
 import cascading.pipe.Every;
@@ -62,15 +61,13 @@ public class CascadingWordCount {
 		// For each input Tuple
 		// parse out each word into a new Tuple with the field name "word"
 		// regular expressions are optional in Cascading
-		String regex = "(?<!\\pL)(?=\\pL)[^ ]*(?<=\\pL)(?!\\pL)";
-		Function function = new RegexGenerator(new Fields("word"), regex);
+		Function function = new RegexSplitGenerator(new Fields("word"), "\\s+");
 		assembly = new Each(assembly, new Fields("line"), function);
 
 		// For every Tuple group
 		// count the number of occurrences of "word" and store result in
 		// a field named "count"
-		AggregateBy count = new CountBy(new Fields("count"));
-		assembly = new AggregateBy(assembly, new Fields("word"), 100000, count);
+		assembly = new CountBy(assembly, new Fields("word"), new Fields("count"), 100000);
 
 		// initialize app properties, tell Hadoop which jar file to use
 		Properties properties = new Properties();
