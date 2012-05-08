@@ -94,8 +94,8 @@
     <dependency>
       <groupId>com.datasalt.pangool</groupId>
       <artifactId>pangool-core</artifactId>
-      <version>0.40-SNAPSHOT</version>
-    </dependency>
+      <version>0.40.1</version>
+    </dependency>        
 
 	<!-- Cloudera's Crunch -->
     <dependency>
